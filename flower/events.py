@@ -77,6 +77,8 @@ class Events(threading.Thread):
             state = shelve.open(self.db)
             if state:
                 self.state = state['events']
+                if 'counter' in state and state['events']:
+                    self.state.counter = state['counter']
             state.close()
 
         if not self.state:
@@ -96,6 +98,7 @@ class Events(threading.Thread):
             logger.debug("Saving state to '%s'...", self.db)
             state = shelve.open(self.db)
             state['events'] = self.state
+            state['counter'] = self.state.counter
             state.close()
 
     def run(self):
